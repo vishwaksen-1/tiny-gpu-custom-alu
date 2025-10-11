@@ -1,0 +1,3 @@
+[submodule "src/tiny-gpu"]
+	path = src/tiny-gpu
+	url = https://github.com/adam-maj/tiny-gpu.git
