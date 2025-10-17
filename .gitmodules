@@ -1,9 +1,6 @@
 [submodule "src/tiny-gpu"]
 	path = src/tiny-gpu
 	url = https://github.com/adam-maj/tiny-gpu.git
-[submodule "src/ariths-gen"]
-	path = src/ariths-gen
-	url = https://github.com/ehw-fit/ariths-gen
 [submodule "src/arithsgen_out/ariths-gen"]
 	path = src/arithsgen_out/ariths-gen
 	url = https://github.com/ehw-fit/ariths-gen
