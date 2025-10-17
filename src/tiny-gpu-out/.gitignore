@@ -1,0 +1,9 @@
+build/*.vvp
+test/logs/*
+!.gitkeep
+gds/**/*.gltf
+
+.DS_Store
+results.xml
+
+*/**/__pycache__
