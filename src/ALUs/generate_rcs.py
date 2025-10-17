@@ -1,0 +1,27 @@
+from ariths_gen.wire_components import Bus
+from ariths_gen.multi_bit_circuits.subtractors import UnsignedRippleCarrySubtractor
+
+# Create 8-bit input buses for a and b
+a = Bus("a",8)
+b = Bus("b",8)
+
+# Create an 8-bit adder (change a_width and b_width for different sizes)
+subtractor = UnsignedRippleCarrySubtractor(a = a, b = b)
+
+# Save to a file
+with open("rcs8.v", "w") as f:
+    subtractor.get_v_code_flat(f)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
