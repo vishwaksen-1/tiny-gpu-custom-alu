@@ -5,5 +5,5 @@ gds/**/*.gltf
 
 .DS_Store
 results.xml
-
+he/build/sim.vvp
 */**/__pycache__
