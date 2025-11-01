@@ -1,30 +1,17 @@
-# .PHONY: test compile
-.PHONY: test 
+.PHONY: test clean
 
-export LIBPYTHON_LOC=$(shell cocotb-config --libpython)
-export PYGPI_PYTHON_BIN=$(shell which python)
+ALU_VARIANT ?= 0     # 0=rippleAr, 1=claW, 2=cocsa
+
+IVERILOG_FLAGS = -g2012 -s gpu -D ALU_VARIANT=$(ALU_VARIANT)
+ALU_SRCS = ALUs/alu_8bit_ripple.v ALUs/alu_8bit_cla.v ALUs/alu_8bit_wallace.v
 
 test_%:
-# 	make compile
-	iverilog -o build/sim.vvp -s gpu -g2012 build/gpu.v
+	mkdir -p build
+	iverilog $(IVERILOG_FLAGS) -o build/sim.vvp $(ALU_SRCS) build/gpu.v
 	COCOTB_TEST_MODULES=test.test_$* \
 	vvp -M $(shell cocotb-config --lib-dir) \
 	    -m $(shell cocotb-config --lib-name vpi icarus) \
 	    build/sim.vvp
 
-# compile:
-# 	make compile_alu
-# 	sv2v -I src/* -w build/gpu.v
-# 	echo "" >> build/gpu.v
-# 	cat build/alu.v >> build/gpu.v
-# 	echo '`timescale 1ns/1ns' > build/temp.v
-# 	cat build/gpu.v >> build/temp.v
-# 	mv build/temp.v build/gpu.v
-
-# compile_%:
-# 	sv2v -w build/$*.v src/$*.sv
-
-# TODO: Get gtkwave visualizaiton
-
-show_%: %.vcd %.gtkw
-	gtkwave $^
+clean:
+	rm -rf build/sim.vvp
