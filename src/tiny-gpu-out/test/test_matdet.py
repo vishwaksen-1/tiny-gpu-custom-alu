@@ -95,20 +95,22 @@ async def test_det2x2(dut):
     # --- 4. Simulation Execution ---
     cycles = 0
     while dut.done.value != 1:
-        if cycles > MAX_CYCLES:
-            # Using standard AssertionError for robust failure handling across cocotb versions
-            raise AssertionError(
-                f"Simulation timeout after {MAX_CYCLES} cycles. 'done' signal was never asserted. Core is likely stalled on an instruction (Check logs from format_cycle)."
-            )
-            
+        # Run memories/drivers each cycle (matches pattern in matadd/matmul tests)
         data_memory.run()
         program_memory.run()
 
         await cocotb.triggers.ReadOnly()
         format_cycle(dut, cycles)
-        
+
         await RisingEdge(dut.clk)
         cycles += 1
+
+        if cycles > MAX_CYCLES:
+            # Timeout: fail the test with a clear message and current state snapshot
+            logger.error(f"Simulation timeout after {MAX_CYCLES} cycles. 'done' signal was never asserted.")
+            data_memory.display(32)
+            program_memory.display(len(program))
+            raise AssertionError(f"Simulation timeout after {MAX_CYCLES} cycles. 'done' signal was never asserted.")
 
     logger.info(f"Completed successfully in {cycles} cycles")
     data_memory.display(32)
