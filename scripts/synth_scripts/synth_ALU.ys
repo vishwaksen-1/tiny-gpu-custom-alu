@@ -1,0 +1,31 @@
+# Read all Verilog source files (update paths as needed)
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/csa8.v"
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/rcs8.v"
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/cmu16.v"
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/div8.v"
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/mux2to1.v"
+read_verilog "/home/lucky/Desktop/ASCA Project/tiny-gpu-custom-alu/src/ALUs/ALU_3.v"
+
+# Set the correct top module name
+hierarchy -top alu_8bit
+
+# Flatten hierarchy to include all submodules in the top module
+flatten alu_8bit
+
+# Standard synthesis passes
+proc; opt; fsm; opt; memory; opt
+
+# Read the Liberty file for Sky130
+read_liberty -lib /home/lucky/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Technology mapping and optimization
+techmap; opt
+abc -liberty /home/lucky/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+opt -nodffe -nosdff
+
+# Print area and timing report (will print to stdout)
+stat -liberty /home/lucky/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_025C_1v80.lib -top alu_8bit
+
+# Write synthesized netlist
+write_verilog ALU_3_synth.v
